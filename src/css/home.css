@@ -1,0 +1,166 @@
+.search_bar {
+    padding: 10px 0;
+}
+
+.search_bar form {
+    position: relative;
+    width: 300px;
+    margin: 0 auto;
+}
+
+.search_bar input, button {
+    border: none;
+    outline: none;
+}
+
+.search_bar input {
+    width: 100%;
+    height: 42px;
+    padding-left: 13px;
+}
+
+.search_bar button {
+    height: 42px;
+    width: 42px;
+    cursor: pointer;
+    position: absolute;
+}
+
+.search_bar input {
+    border: 2px solid #8a2be2;
+    border-radius: 5px;
+    background: white;
+    top: 0;
+    right: 0;
+    width: 284px;
+    font-size: 1.4rem;
+}
+
+.search_bar button {
+    background: #6439af;
+    border-radius: 0 5px 5px 0;
+    width: 60px;
+    top: 0;
+    right: 0;
+    height: 48px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+}
+
+.search_bar button:before {
+    color: #F9F0DA;
+}
+
+@media (min-width: 700px) {
+    .search_bar {
+        width: 600px;
+        margin: auto;
+    }
+
+    .search_bar input {
+        height: 52px;
+        width: 560px;
+        margin-left: -145px;
+        font-size: 1.6rem;
+    }
+
+    .search_bar button {
+        right: -130px;
+        height: 57px;
+        width: 80px;
+        font-size: 1.8rem;
+    }
+}
+
+h1 {
+    font-size: 3.1em;
+    color: white;
+    margin: 12rem auto 18rem;
+    max-width: 60rem;
+    padding-left: 7px;
+}
+
+h2 {
+    margin: 2rem auto -1rem;
+    width: 87%;
+    display: block;
+    text-align: center;
+    font-size: 2.6rem;
+    padding: 1rem;
+}
+
+
+.imgGroup {
+    width: 79%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.imgGroup ul {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.thumbnail {
+    width: 260px;
+    height: 300px;
+    background-color: white;
+    margin: 1.5rem 1.5rem;
+    cursor: pointer;
+}
+
+.thumbnail:hover {
+    box-shadow: 5px 5px 10px #888888;
+}
+
+.thumbnail a {
+    text-decoration: none;
+}
+
+.thumbnail a p {
+    color: #a9a9a9;
+    font-size: 1.3rem;
+    margin: 0 2.9rem;
+    height: 4rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.thumbnail a h3 {
+    color: black;
+    font-size: 2rem;
+    margin: 0.7rem 2.9rem 0;
+}
+
+.thumbnail a img {
+    background-color: gray;
+    object-fit: cover;
+    transition: all .4s cubic-bezier(.645, .045, .355, 1);
+}
+
+.thumbnail .img-box {
+    width: 260px;
+    height: 200px;
+    overflow: hidden;
+}
+
+.thumbnail .img-box:hover img {
+    transform: scale(1.1);
+}
+
+@media (max-width: 340px) {
+    .thumbnail {
+        width: 36rem;
+        height: 55rem;
+    }
+
+    .thumbnail a img {
+        width: 36rem;
+        height: 48rem;
+    }
+}

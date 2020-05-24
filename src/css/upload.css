@@ -1,0 +1,100 @@
+form {
+    display: flex;
+    flex-direction: column;
+    margin: 4rem auto 5rem;
+    width: 85%;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+form label {
+    width: 80%;
+    font-size: 1.8rem;
+    margin: auto;
+}
+
+label p {
+    color: black;
+}
+
+label input {
+    width: 100%;
+    height: 2.8rem;
+    opacity: 0.8;
+    background: #f3f5f8;
+    border: #888888 1px solid;
+}
+
+label input.submit {
+    margin: 2.5rem auto 2.5rem;
+    width: 5rem;
+}
+
+label textarea.description {
+    resize: none;
+    height: 20rem;
+    width: 100%;
+    opacity: 0.8;
+    background: #f3f5f8;
+    border: #888888 1px solid;
+}
+
+.ImagesUpload{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.ImagesUpload img{
+    width: 35%;
+    margin: 2rem 1rem;
+    object-fit: scale-down;
+}
+
+.ImgUpBtnBox {
+    width: auto;
+    margin: 6rem auto 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h3 {
+    margin: 2rem 0 0;
+    font-size: 2.8rem;
+    text-align: center;
+    letter-spacing: 0.5rem;
+}
+
+.ImgUpBtnBox input {
+    width: 100px;
+    visibility: hidden;
+}
+
+.ImgUpBtnBox img {
+    border: #888888 2px dashed;
+    border-radius: 15px;
+    padding: 32px;
+    cursor: pointer;
+    margin-top: -6rem;
+    background: #f3f5f8;
+}
+
+input[type="submit"] {
+    width: 80%;
+    font-size: 2rem;
+    color: #fff;
+    background: #6439af;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    padding: 1em;
+    margin: 3em auto;
+}
+
+input[type="submit"]:hover {
+    background: #8a2be2;
+    transform: translateY(3px);
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.58);
+    transition: .5s all;
+}

@@ -1,0 +1,121 @@
+html, body {
+    min-height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+    min-height: 100%;
+    width: 85%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    font-size: 2.8rem;
+    letter-spacing: 1rem;
+    text-align: center;
+}
+
+.search_box {
+    padding: 2rem;
+    background: rgba(112, 128, 144, 0.4);
+}
+
+.imgGroup{
+    display: none;
+}
+
+.pagination{
+    display: none;
+}
+
+form {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.7rem;
+    letter-spacing: 0.2rem;
+}
+
+form label,form input[type="radio"]{
+    cursor: pointer;
+}
+
+form label{
+    margin-left: 3rem;
+}
+
+form input, form textarea {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    background: #f3f5f8;
+}
+
+form input[name="title"] {
+    height: 3rem;
+    width: 100%;
+    border: #a9a9a9 1px solid;
+}
+
+form textarea[name="description"] {
+    height: 10rem;
+    width: 100%;
+    resize: none;
+}
+
+form input[type="submit"] {
+    width: 15rem;
+    font-size: 2rem;
+    color: #fff;
+    background: #6439af;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin: 0;
+}
+
+form input[type="submit"]:hover {
+    background: #8a2be2;
+    transform: translateY(3px);
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.58);
+    transition: .5s all;
+}
+
+form input[type="radio"] {
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+form input[type="radio"]:after {
+    content: '';
+    background-image: url(../image/radio_before.jpg);
+    background-size: 20px 20px;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    z-index: 100;
+}
+
+form input[type="radio"]:checked:after {
+    background-image: url(../image/radio_after.jpg);
+    background-size: 18px 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.thumbnail {
+    margin-top: 0;
+    margin-bottom: 0;
+    border-bottom: #888888 1px solid;
+}
+
+.thumbnail:last-of-type {
+    border: none;
+}
