@@ -17,12 +17,14 @@ main {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
+    margin-left: 10%;
+    margin-right: 10%;
 }
 
 
 .thumbnail {
-    width: 90%;
-    height: 25rem;
+    height: 250px;
+    width: 45%;
     background: #e3e5e8;
     margin: 2rem 2rem 2rem;
     display: flex;
@@ -68,36 +70,50 @@ main {
 }
 
 .thumbnail a {
-    width: 200px;
-    height: 250px;
+    display: flex;
+    flex-direction: row;
+    text-decoration: none;
 }
 
-.thumbnail .img-box {
+.thumbnail a div{
+    flex: 0 0 250px;
+}
+
+.thumbnail a div:last-of-type {
+    margin-top: 1.5rem;
+    margin-left: 1rem;
+    flex: 1 1;
+}
+
+.thumbnail a .img-box {
     margin: 0;
-    width: 200px;
+    width: 250px;
     height: 250px;
     overflow: hidden;
-}
-
-.thumbnail .img-box:hover img {
-    transform: scale(1.1);
-}
-
-.thumbnail a img {
-    background-color: #232a34;
     object-fit: cover;
+    background-color: #232a34;
     cursor: pointer;
+}
+
+.thumbnail a .img-box img {
+    width: 250px;
+    height: 250px;
+    object-fit: cover;
     transition: all .4s cubic-bezier(.645, .045, .355, 1);
 }
 
-.thumbnail div p {
+.thumbnail a .img-box:hover img{
+    transform: scale(1.1);
+}
+
+.thumbnail a div p {
     color: #a9a9a9;
     font-size: 1.6rem;
-    margin: 1rem 2.9rem 0;
+    margin: 1rem 3rem 0;
     height: 13rem;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+    -webkit-line-clamp: 5;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -108,10 +124,7 @@ main {
     margin: 0.7rem 2.9rem 0;
 }
 
-.thumbnail div {
-    margin-top: 1.5rem;
-    margin-left: 1rem;
-}
+
 
 .thumbnail div form {
     margin: 0.7rem 2.9rem 0;

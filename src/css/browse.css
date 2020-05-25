@@ -87,7 +87,7 @@ aside nav li {
 }
 
 aside nav li:first-of-type {
-    background: #f3f5f8;
+    background: #d9d9d9;
 }
 
 aside nav li:last-of-type {
@@ -120,7 +120,9 @@ aside nav li a {
     margin-top: 4rem;
     margin-left: 2rem;
     margin-right: 13rem;
-    background: rgba(112, 128, 144, 0.2);
+    background: white;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 @media (max-width: 1200px )and (min-width: 500px){

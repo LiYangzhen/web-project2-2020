@@ -960,17 +960,38 @@ footer {
     color: white;
     background-color: #343a40;
     border: 1px solid snow;
+    display: flex;
+    flex-flow: column;
+    overflow: hidden;
 }
 
 .sidebar a:first-child {
     margin-bottom: 1rem;
 }
 
+.sidebar a:nth-child(2):hover{
+    background-color: #0186ba;
+}
+
 .sidebar a:hover{
-    color: red;
-    background-color: rgb(62,69,78);
+    background-color: #ff5d4a;
     cursor: pointer;
 }
 
+.sidebar a span{
+    transition: all ease-in-out 0.2s;
+}
+
+.sidebar a span:first-of-type{
+    margin-top: -15px;
+}
+
+.sidebar a:hover span:first-of-type{
+    transform: translateY(-50px);
+}
+
+.sidebar a:hover span:last-of-type{
+    transform: translateY(-7px);
+}
 
 /*-------------To-Top----------------*/

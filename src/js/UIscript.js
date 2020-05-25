@@ -11,7 +11,7 @@ const city = {
     意大利: ['罗马', '米兰', '威尼斯', '佛罗伦萨'],
     美国: ['纽约', '洛杉矶', '华盛顿']
 };
-if (fileName.includes("index")){
+if (fileName.includes("index")) {
     var CONTAINER = document.getElementsByClassName("mainImg")[0];
     var PICTURES = document.getElementsByClassName("scroll-img-box")[0].getElementsByTagName("img");
     var BTS = document.getElementsByClassName("radius")[0].getElementsByTagName("span");
@@ -70,8 +70,7 @@ if (fileName.includes("index")) {
 ////////////////////////// 滚轮
 
 window.onscroll = function () {
-    var a = document.documentElement.scrollTop || document.body.scrollTop;     //滚动条y轴上的距离
-    let b = location.href.split('/');
+    let a = document.documentElement.scrollTop || document.body.scrollTop;     //滚动条y轴上的距离
     if (fileName.includes("index")) {
         if (a > 200) {
             document.querySelector(".banner").style.backgroundColor = "#343a40";
@@ -131,4 +130,19 @@ function addOption() {
 if (fileName.includes("browse")) {
     allCity();
 }
+
 ///////////////////////
+
+function toTop () {
+    let timer;
+    cancelAnimationFrame(timer);
+    timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+            scrollTo(0, oTop - 100);
+            timer = requestAnimationFrame(fn);
+        } else {
+            cancelAnimationFrame(timer);
+        }
+    });
+}
