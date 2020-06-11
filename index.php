@@ -1,5 +1,28 @@
 <?php
 session_start();
+require_once('src/html/config.php');
+
+function generate($pdo, $result)
+{
+    while ($result->rowCount() > 0 && $row = $result->fetch()) {
+        $sql = "SELECT * FROM travelimage WHERE ImageID=:imageid";
+        $query = $pdo->prepare($sql);
+        $query->bindValue(':imageid', $row['ImageID']);
+        $query->execute();
+        $image = $query->fetch();
+        echo '<li class="thumbnail">
+                <a href="src/html/details.php?imageid='.$image['ImageID'].'">
+                    <div class="img-box">
+                        <img src="src/travel-images/small/' .$image['PATH'].'" alt="图片" width="260" height="200">
+                    </div>
+                    <div><h3>' . $image['Title'] . '</h3>
+                        <p>' . $image['Description'] . '</p>
+                    </div>
+                </a>
+            </li>';
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -31,8 +54,8 @@ session_start();
             <p>ImgShow</p>
         </a>
         <a href="index.php" class="highlight link">首页</a>
-        <a href="src/html/search.html" class="link">搜索</a>
-        <a href="src/html/browse.html" class="link">阅览</a>
+        <a href="src/html/search.php" class="link">搜索</a>
+        <a href="src/html/browse.php" class="link">阅览</a>
         <?php
         if (isset($_SESSION['id'])) {
             echo '<div class="dropdown-menu">
@@ -41,13 +64,13 @@ session_start();
                 <li class="menu_item"><a href="src/html/upload.html" class="upload">上传图片</a></li>
                 <li class="menu_item"><a href="src/html/my_photos.html" class="my-pictures">我的图片</a></li>
                 <li class="menu_item"><a href="src/html/my_favourite.html" class="collections">我的收藏</a></li>
+                 <li class="menu_item"><a href="src/html/logout.php" class="logout">退出登录</a></li>
                 </ul>
                 </div>';
         } else {
-            echo '<a href="src/html/login.php" class="link">登录</a>';
+            echo '<a href="src/html/login.php" class="link"></span>登录</a>';
         }
         ?>
-
     </nav>
     <h1>精彩的生活、宏伟的建筑与绚丽的风景在这里，一同分享</h1>
     <div class="scroll radius">
@@ -61,103 +84,31 @@ session_start();
 <!--内容-->
 <aside id="sidebar" class="sidebar">
     <a href="javascript:toTop()" id="toTop"><span>︿</span><span>Top</span></a>
-    <a onclick="alert('图片已刷新')">刷 新</a>
+    <a href="javascript:location.reload();">刷 新</a>
 </aside>
 <main>
     <h2>免费精美图片</h2>
-
     <section class="imgGroup">
         <ul>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/5855174537.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>富强、民主、文明、和谐、自由 、平等、公正、法治、爱国、敬业、诚信、友善</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/6114850721.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>一个幽灵，共产主义的幽灵，在欧洲大陆徘徊。为了对这个幽灵进行神圣的围剿，旧欧洲的一切势力，
-                            教皇和沙皇、梅特涅和基佐、法国的激进派和德国的警察，都联合起来了。
-                        </p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/8710247776.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>中国是世界上历史最悠久的国家之一。中国各族人民共同创造了光辉灿烂的文化，具有光荣的革命传统。</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/9493997865.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>“我志愿加入中国共-产-党,拥护党的纲领,遵守党的章程,履行党员义务;执行党的决定,严守党的纪律,
-                            保守党的秘密,对党忠诚,积极工作,为共-产主义奋斗终身,随时准备为党和人民牺牲一切,永不叛党。</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/222222.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>我志愿加入中国共产主义青年团,坚决拥护中国共产党的领导,遵守团的章程,执行团的决议,履行团员义务,
-                            严守团的纪律,勤奋学习,积极工作,吃苦在前,享受在后,为共产主义事业而奋斗。</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/8645912379.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>"Lorem ipsum dolor sit amet, consectetaur adipisicing elit, sed do eiusmod tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/6592317633.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>腾飞腾飞，振翅高飞</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="src/html/details.html">
-                    <div class="img-box">
-                        <img src="src/travel-images/small/6115548152.jpg" alt="图片" width="260" height="200">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>起来，饥寒交迫的奴隶！
-                            起来，全世界受苦的人！
-                            满腔的热血已经沸腾，
-                            要为真理而斗争！
-                        </p>
-                    </div>
-                </a>
-            </li>
+            <?php
+            try {
+                if (!isset($_SESSION['refresh'])) {
+                    $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+                    $sql = "SELECT * FROM travelimagefavor ORDER BY  LIMIT 10";
+                    $result = $pdo->query($sql);
+                    generate($pdo, $result);
+                } else {
+                    $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+                    $sql = "SELECT * FROM travelimage ORDER BY RAND() LIMIT 10";
+                    $result = $pdo->query($sql);
+                    generate($pdo, $result);
+                }
+                $pdo = null;
+            } catch (PDOException $e) {
+                $pdo = null;
+                echo '<script>alert("服务器错误！")</script>';
+            }
+            ?>
         </ul>
     </section>
 </main>

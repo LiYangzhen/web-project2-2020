@@ -75,7 +75,7 @@ li button{
     border: none;
 }
 
-li button:hover{
+li button:hover,li button .favor{
     background-image: url("../image/collect_hover.png");
     cursor: pointer;
 }
@@ -87,6 +87,7 @@ article {
     margin: 2rem auto 4rem;
 }
 
-article pre{
+article p{
     font-size: 1.75rem;
+    color: black;
 }

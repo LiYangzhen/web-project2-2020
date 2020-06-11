@@ -656,10 +656,6 @@ header {
     background-image: url("../image/upload.png");
 }
 
-.dropdown-menu .log-in {
-    background-image: url("../image/log-in.png");
-}
-
 .dropdown-menu .my-pictures {
     background-image: url("../image/my_pictures.png");
 }
@@ -668,6 +664,9 @@ header {
     background-image: url("../image/collections.png");
 }
 
+.dropdown-menu .logout{
+    background-image: url("../image/logout.png");
+}
 
 /*--------------下拉框--------------*/
 

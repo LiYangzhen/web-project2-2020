@@ -1,27 +1,6 @@
 <?php
 session_start();
 require_once('config.php');
-
-function validLogin()
-{
-    try {
-        $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-        //very simple (and insecure) check of valid credentials.
-        $sql = "SELECT * FROM Traveluser WHERE UserName=:user and Pass=:pass";
-
-        $statement = $pdo->prepare($sql);
-        $statement->bindValue(':user', $_POST['username']);
-        $statement->bindValue(':pass', $_POST['password']);
-        $statement->execute();
-        if ($statement->rowCount() > 0) {
-            return $row = $statement->fetch();
-        }
-        return false;
-    } catch (PDOException $e) {
-        return false;
-    }
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="zh">
@@ -40,31 +19,57 @@ function validLogin()
 <body>
 <main>
     <div class="form_part">
-
         <form action="#" method="post">
             <input class="input_box" name="username" type="text" placeholder="用户名" pattern="^[a-zA-Z0-9_-]{4,16}$"
                    required>
             <input class="input_box" name="password" type="password" placeholder="密码" pattern="^[0-9A-Za-z]{8,16}$"
                    required>
             <?php
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                if ($row = validLogin()) {
+            function validLogin()
+            {
+                try {
+                    $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+                    $sql = "SELECT * FROM Traveluser WHERE UserName=:user and Pass=:pass";
+
+                    $statement = $pdo->prepare($sql);
+                    $statement->bindValue(':user', $_POST['username']);
+                    $statement->bindValue(':pass', $_POST['password']);
+                    $statement->execute();
+                    if ($statement->rowCount() > 0) {
+                        $pdo = null;
+                        return $row = $statement->fetch();
+                    } else {
+                        $pdo = null;
+                        return false;
+                    }
+                } catch (PDOException $e) {
                     $pdo = null;
-                    $_SESSION['id'] = $row['UID'];
-                    $_SESSION['username'] = $row['UserName'];
-                    $_SESSION['password'] = $row['Pass'];
-                    $_SESSION['state'] = $row['State'];
-                    $_SESSION['email'] = $row['Email'];
-                    header("location: ../../index.php");
-                } else {
-                    echo "<p style='color: red'>用户名或密码错误</p>";
+                    return "exception";
+                }
+            }
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                switch ($row = validLogin()) {
+                    case false:
+                        echo "<p style='color: red'>用户名或密码错误</p>";
+                        break;
+                    case "exception":
+                        echo "<p style='color: red'>无法连接到服务器，请检查您的网络</p>";
+                        break;
+                    default:
+                        $_SESSION['id'] = $row['UID'];
+                        $_SESSION['username'] = $row['UserName'];
+                        $_SESSION['password'] = $row['Pass'];
+                        $_SESSION['state'] = $row['State'];
+                        $_SESSION['email'] = $row['Email'];
+                        header("location: ../../index.php");
                 }
             }
             ?>
             <input type="submit" value="登录">
         </form>
 
-        <p>创建一个账号? <a href="register.html"> 立即注册!</a></p>
+        <p>创建一个账号? <a href="register.php"> 立即注册!</a></p>
     </div>
 
 

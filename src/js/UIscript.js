@@ -133,7 +133,7 @@ if (fileName.includes("browse")) {
 
 ///////////////////////
 
-function toTop () {
+function toTop() {
     let timer;
     cancelAnimationFrame(timer);
     timer = requestAnimationFrame(function fn() {
@@ -146,3 +146,26 @@ function toTop () {
         }
     });
 }
+
+////////////////
+
+window.onload = function () {
+    let a = document.documentElement.scrollTop || document.body.scrollTop;     //滚动条y轴上的距离
+    if (fileName.includes("index")) {
+        if (a > 200) {
+            document.querySelector(".banner").style.backgroundColor = "#343a40";
+        } else {
+            document.querySelector(".banner").style.backgroundColor = "transparent";
+        }
+    } else {
+        document.querySelector(".banner").style.backgroundColor = "#343a40";
+    }
+
+    if (a > 200) {
+        document.querySelector("#sidebar").style.visibility = "visible";
+
+    } else {
+        document.querySelector("#sidebar").style.visibility = "hidden";
+    }
+};
+
