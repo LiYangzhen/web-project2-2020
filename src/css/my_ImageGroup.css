@@ -26,7 +26,7 @@ main {
     height: 250px;
     width: 45%;
     background: #e3e5e8;
-    margin: 2rem 2rem 2rem;
+    margin: 2rem;
     display: flex;
     flex-direction: row;
 }

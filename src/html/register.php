@@ -18,7 +18,7 @@ require_once('config.php');
 <body>
 <main>
     <div class="form_part register">
-        <form action="#" method="post">
+        <form action="register.php" method="post">
             <label>用户名
                 <input class="input_box" name="username" type="text" placeholder="不少于8位不高于16位的数字、字母、下划线"
                        pattern="^[a-zA-Z0-9_-]{4,16}$"

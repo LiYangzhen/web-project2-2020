@@ -6,10 +6,10 @@ let currentPosition = 0;
 let timer;
 let fileName = location.href.split('/')[location.href.split('/').length - 1];
 const city = {
-    中国: ['上海', '昆明', '北京', '烟台'],
-    日本: ['东京', '大阪', '镰仓'],
-    意大利: ['罗马', '米兰', '威尼斯', '佛罗伦萨'],
-    美国: ['纽约', '洛杉矶', '华盛顿']
+    China: ['Shanghai','Kunming','Beijing','Yantai'],
+    Japan: ['Tokyo', 'Osaka', 'Kamakura'],
+    Italy: ['Roma','Milano','Venezia','Firenze'],
+    'United States': ['New York','San Francisco', 'Washington']
 };
 if (fileName.includes("index")) {
     var CONTAINER = document.getElementsByClassName("mainImg")[0];
@@ -104,6 +104,11 @@ if (fileName.includes("upload")) {
 }
 
 /////////////////////// 二级联动
+
+if (fileName.includes("browse")) {
+    allCity();
+}
+
 function allCity() {
     var select1 = document.getElementById("country");
     for (var i in city) {
@@ -117,18 +122,14 @@ function addOption() {
     let select1 = document.getElementById("country").value;
     select2.length = 0; //清空一下市级菜单
     if (select1 != 'placeholder') {
-        select2.add(new Option("请选择城市", "请选择城市"), null);
+        select2.add(new Option("请选择城市", "placeholder"), null);
         for (var i in city[select1]) {
             select2.add(new Option(city[select1][i], city[select1][i]), null);
         }
     } else {
         select2.length = 0;
-        select2.add(new Option("按城市筛选", "按城市筛选"), null);
+        select2.add(new Option("按城市筛选", "placeholder"), null);
     }
-}
-
-if (fileName.includes("browse")) {
-    allCity();
 }
 
 ///////////////////////

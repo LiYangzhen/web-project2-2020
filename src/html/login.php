@@ -19,7 +19,7 @@ require_once('config.php');
 <body>
 <main>
     <div class="form_part">
-        <form action="#" method="post">
+        <form action="login.php" method="post">
             <input class="input_box" name="username" type="text" placeholder="用户名" pattern="^[a-zA-Z0-9_-]{4,16}$"
                    required>
             <input class="input_box" name="password" type="password" placeholder="密码" pattern="^[0-9A-Za-z]{8,16}$"

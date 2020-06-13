@@ -664,7 +664,7 @@ header {
     background-image: url("../image/collections.png");
 }
 
-.dropdown-menu .logout{
+.dropdown-menu .logout {
     background-image: url("../image/logout.png");
 }
 
@@ -968,28 +968,29 @@ footer {
     margin-bottom: 1rem;
 }
 
-.sidebar a:nth-child(2):hover{
-    background-color: #0186ba;
-}
-
-.sidebar a:hover{
+.sidebar a:hover {
     background-color: #ff5d4a;
     cursor: pointer;
 }
 
-.sidebar a span{
+.sidebar a:nth-of-type(2):hover {
+    background-color: #0186ba;
+    cursor: pointer;
+}
+
+.sidebar a span {
     transition: all ease-in-out 0.2s;
 }
 
-.sidebar a span:first-of-type{
+.sidebar a span:first-of-type {
     margin-top: -15px;
 }
 
-.sidebar a:hover span:first-of-type{
+.sidebar a:hover span:first-of-type {
     transform: translateY(-50px);
 }
 
-.sidebar a:hover span:last-of-type{
+.sidebar a:hover span:last-of-type {
     transform: translateY(-7px);
 }
 

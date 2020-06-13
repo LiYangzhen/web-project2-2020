@@ -2,21 +2,16 @@
 session_start();
 require_once('src/html/config.php');
 
-function generate($pdo, $result)
+function generate($result)
 {
     while ($result->rowCount() > 0 && $row = $result->fetch()) {
-        $sql = "SELECT * FROM travelimage WHERE ImageID=:imageid";
-        $query = $pdo->prepare($sql);
-        $query->bindValue(':imageid', $row['ImageID']);
-        $query->execute();
-        $image = $query->fetch();
         echo '<li class="thumbnail">
-                <a href="src/html/details.php?imageid='.$image['ImageID'].'">
+                <a href="src/html/details.php?imageid=' . $row['ImageID'] . '">
                     <div class="img-box">
-                        <img src="src/travel-images/small/' .$image['PATH'].'" alt="图片" width="260" height="200">
+                        <img src="src/travel-images/small/' . $row['PATH'] . '" alt="图片" width="260" height="200">
                     </div>
-                    <div><h3>' . $image['Title'] . '</h3>
-                        <p>' . $image['Description'] . '</p>
+                    <div><h3>' . $row['Title'] . '</h3>
+                        <p>' . $row['Description'] . '</p>
                     </div>
                 </a>
             </li>';
@@ -82,9 +77,9 @@ function generate($pdo, $result)
     <a href="javascript:scroll(1)" class="arrowhead-right" id="ar">></a>
 </header>
 <!--内容-->
-<aside id="sidebar" class="sidebar">
+<aside id="sidebar" class="sidebar" >
     <a href="javascript:toTop()" id="toTop"><span>︿</span><span>Top</span></a>
-    <a href="javascript:location.reload();">刷 新</a>
+    <a href="src/html/refresh.php">刷  新</a>
 </aside>
 <main>
     <h2>免费精美图片</h2>
@@ -92,16 +87,16 @@ function generate($pdo, $result)
         <ul>
             <?php
             try {
-                if (!isset($_SESSION['refresh'])) {
+                if (!$_SESSION['refresh']) {
                     $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-                    $sql = "SELECT * FROM travelimagefavor ORDER BY  LIMIT 10";
+                    $sql = "select travelimagefavor.ImageID ,travelimage.PATH,travelimage.Title,travelimage.Description ,count(*) from travelimagefavor JOIN travelimage ON travelimage.ImageID=travelimagefavor.ImageID group by travelimage.ImageID order by count(*) DESC LIMIT 10";
                     $result = $pdo->query($sql);
-                    generate($pdo, $result);
+                    generate($result);
                 } else {
                     $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
                     $sql = "SELECT * FROM travelimage ORDER BY RAND() LIMIT 10";
                     $result = $pdo->query($sql);
-                    generate($pdo, $result);
+                    generate($result);
                 }
                 $pdo = null;
             } catch (PDOException $e) {

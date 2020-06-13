@@ -214,17 +214,38 @@ aside nav li a {
 .browse_box main select {
     margin-right: 2rem;
     background: #f3f5f8;
+    height: 28px;
+    width: 120px;
 }
 
 .browse_box main .selects {
     padding-left: 3rem;
 }
 
+.browse_box main input{
+    background-color: #6439af;
+    border: none;
+    color: white;
+    margin-left: 1rem;
+    padding: 0;
+    width: 10rem;
+    height: 28px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.browse_box main input:hover{
+    cursor: pointer;
+    background-color: #502E8C;
+}
+
 .browse_box main ul {
-    margin-right: 1rem;
-    margin-left: 3rem;
+    margin-right: 2rem;
+    margin-left: 2rem;
     display: flex;
     flex-flow: row wrap;
+    min-height: 500px;
+    background-color: #f3f5f8;
 }
 
 .browse_box main ul li {
