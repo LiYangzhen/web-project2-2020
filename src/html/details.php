@@ -23,7 +23,7 @@ require_once('config.php');
             <img src="../image/logo.svg" alt="logo">
             <p>ImgShow</p>
         </a>
-        <a href="../../index.php" class="highlight link">首页</a>
+        <a href="../../index.php" class="link">首页</a>
         <a href="search.php" class="link">搜索</a>
         <a href="browse.php" class="link">阅览</a>
         <?php
@@ -53,7 +53,7 @@ require_once('config.php');
     <?php
     try {
         $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-        $sql = "select * from travelimage where ImageID=:imageid";
+        $sql = "select Content,Description,Title,PATH from travelimage where ImageID=:imageid";
         $result = $pdo->prepare($sql);
         $result->bindValue(':imageid', $_GET['imageid']);
         $result->execute();
@@ -61,8 +61,9 @@ require_once('config.php');
         $theme = $figure['Content'];
         $description = $figure['Description'];
         $title = $figure['Title'];
+        $path=$figure['PATH'];
 
-        $sql = "select * from travelimage join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID where travelimage.ImageID=:imageid";
+        $sql = "select UID from travelimage join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID where travelimage.ImageID=:imageid";
         $result = $pdo->prepare($sql);
         $result->bindValue(':imageid', $_GET['imageid']);
         $result->execute();
@@ -75,14 +76,14 @@ require_once('config.php');
         }
         $collected = $collected ? "favor" : "";
 
-        $sql = "select * from travelimage join geocountries on travelimage.CountryCodeISO=geocountries.ISO where ImageID=:imageid";
+        $sql = "select CountryName from travelimage join geocountries on travelimage.CountryCodeISO=geocountries.ISO where ImageID=:imageid";
         $result = $pdo->prepare($sql);
         $result->bindValue(':imageid', $_GET['imageid']);
         $result->execute();
         $figure = $result->fetch();
         $country = $figure['CountryName'];
 
-        $sql = "select * from travelimage join geocities on travelimage.CityCode=geocities.GeoNameID where ImageID=:imageid";
+        $sql = "select AsciiName from travelimage join geocities on travelimage.CityCode=geocities.GeoNameID where ImageID=:imageid";
         $result = $pdo->prepare($sql);
         $result->bindValue(':imageid', $_GET['imageid']);
         $result->execute();
@@ -92,7 +93,7 @@ require_once('config.php');
 
         echo '<h2>' . $title . '</h2>
         <figure>
-        <img src="../travel-images/medium/' . $figure['PATH'] . '" >
+        <img src="../travel-images/medium/' . $path . '" >
         <div class="content">
             <ul>
                 <li>收藏人数</li>

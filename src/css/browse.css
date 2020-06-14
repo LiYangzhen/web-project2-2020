@@ -1,3 +1,7 @@
+h4{
+    margin-left: 2rem;
+}
+
 .browse_box {
     display: flex;
     align-items: flex-start;
@@ -27,7 +31,7 @@ aside .search_bar form {
     margin: 0 auto;
 }
 
-aside .search_bar input, button {
+aside .search_bar input, aside .search_bar input.button {
     border: none;
     outline: none;
 }
@@ -38,7 +42,7 @@ aside .search_bar input {
     padding-left: 13px;
 }
 
-aside .search_bar button {
+aside .search_bar .button {
     height: 42px;
     width: 42px;
     cursor: pointer;
@@ -55,7 +59,7 @@ aside .search_bar input {
     font-size: 1.4rem;
 }
 
-aside .search_bar button {
+aside .search_bar .button {
     background: #6439af;
     border-radius: 0 5px 5px 0;
     width: 60px;
@@ -67,7 +71,7 @@ aside .search_bar button {
     color: white;
 }
 
-aside .search_bar button:before {
+aside .search_bar .button:before {
     color: #F9F0DA;
 }
 

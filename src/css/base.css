@@ -354,13 +354,17 @@ html {
     font-size: 62.5%;
 }
 
-body {
+ body {
     font-size: 1.1em;
     line-height: 1.6;
     font-weight: 400;
     font-family: "Noto+Sans+SC", "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #222;
     background: #f4f4f4;
+    min-height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
 }
 
 ul {
@@ -681,7 +685,7 @@ header {
     padding-left: 0;
 }
 
-.pagination ul li {
+.pagination ul a {
     padding: 0 10px;
     vertical-align: top;
     display: inline-block;
@@ -696,57 +700,58 @@ header {
     border-radius: 6px;
     margin: 0 1px;
     border: 1px solid #ebebeb;
+    text-decoration: none;
 }
 
-.pagination ul li:hover {
+.pagination ul a:hover {
     transform: scale(1.1);
     background-color: #F4F6F8;
 }
 
-.pagination li.active {
+.pagination a.active {
     background: #98A6AD;
     color: white;
     cursor: not-allowed;
 }
 
-.pagination li.disabled {
+.pagination a.disabled {
     cursor: not-allowed;
 }
 
-.pagination li.totalPage {
+.pagination a.totalPage {
     background: transparent;
     cursor: default;
     border: none;
     padding: 0 6px;
 }
 
-.pagination li.totalPage:hover {
+.pagination a.totalPage:hover {
     transform: none;
     background-color: #ffffff;
 }
 
 
-.pagination li input {
-    -webkit-appearance: none;
-    background-color: #fff;
-    background-image: none;
-    border-radius: 4px;
-    border: 1px solid #dcdfe6;
-    box-sizing: border-box;
-    color: #606266;
-    display: inline-block;
-    font-size: inherit;
-    outline: none;
-    padding: 3px 5px;
-    transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
-    width: 40px;
-    height: 25px;
-    margin: 0 6px;
-}
+/*.pagination a input {*/
+/*    -webkit-appearance: none;*/
+/*    background-color: #fff;*/
+/*    background-image: none;*/
+/*    border-radius: 4px;*/
+/*    border: 1px solid #dcdfe6;*/
+/*    box-sizing: border-box;*/
+/*    color: #606266;*/
+/*    display: inline-block;*/
+/*    font-size: inherit;*/
+/*    outline: none;*/
+/*    padding: 3px 5px;*/
+/*    transition: border-color .2s cubic-bezier(.645, .045, .355, 1);*/
+/*    width: 40px;*/
+/*    height: 25px;*/
+/*    margin: 0 6px;*/
+/*}*/
 
-.pagination li input:focus {
-    border-color: #98A6AD;
-}
+/*.pagination a input:focus {*/
+/*    border-color: #98A6AD;*/
+/*}*/
 
 .pagination {
     user-select: none;

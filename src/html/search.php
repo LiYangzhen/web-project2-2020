@@ -1,6 +1,104 @@
 <?php
 session_start();
 require_once('config.php');
+
+$_SESSION['title'] = null;
+$_SESSION['description'] = null;
+
+function generate($result)
+{
+    $i = 0;
+    while (($row = $result->fetch()) && $i < 18) {
+        echo '<li class="thumbnail" title="' . $row['Title'] . '">
+                <a href="details.php?imageid=' . $row['ImageID'] . '">
+                    <div class="img-box">
+                        <img src="../travel-images/small/' . $row['PATH'] . '" alt="图片">
+                    </div>
+                    <div><h3>' . $row['Title'] . '</h3>
+                        <p>' . $row['Description'] . '</p>
+                    </div>
+                </a>
+            </li>';
+        $i++;
+    }
+}
+
+function fuzzyQueryFirst()
+{
+    try {
+        $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+        $pattern = '/\b[a-zA-Z0-9]+\b/';
+        if ($_POST['search_type'] == "search_by_title" || !empty($_GET['title'])) {
+            preg_match_all($pattern, $_SESSION['title'], $res);
+            $i = 0;
+            $sql = 'SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Title LIKE "%' . $res[0][$i] . '%"';
+            $i++;
+            while ($i < count($res[0])) {
+                $sql = $sql . 'UNION SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Title LIKE "%' . $res[0][$i] . '%"';
+                $i++;
+            }
+        } elseif ($_POST['search_type'] == "search_by_description" || !empty($_GET['description'])) {
+            preg_match_all($pattern, $_SESSION['description'], $res);
+            $i = 0;
+            $sql = 'SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Description LIKE "%' . $res[0][$i] . '%"';
+            $i++;
+            while ($i < count($res[0])) {
+                $sql = $sql . 'UNION SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Description LIKE "%' . $res[0][$i] . '%"';
+                $i++;
+            }
+        }
+        $statement = $pdo->query($sql);
+        if (($_SESSION['sum'] = $statement->rowCount()) > 0) {
+            generate($statement);
+        } else {
+            echo '<h4>搜索无结果</h4>';
+        }
+        $pdo = null;
+    } catch (PDOException $e) {
+        $pdo = null;
+        echo '<script>alert("错误：无法连接到服务器")</script>';
+    }
+}
+
+function fuzzyQueryAgain()
+{
+    try {
+        $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+        $pattern = '/\b[a-zA-Z0-9]+\b/';
+        if ($_POST['search_type'] == "search_by_title" || !empty($_GET['title'])) {
+            preg_match_all($pattern, $_SESSION['title'], $res);
+            $i = 0;
+            $sql = 'SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Title LIKE "%' . $res[0][$i] . '%"';
+            $i++;
+            while ($i < count($res[0])) {
+                $sql = $sql . 'UNION SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Title LIKE "%' . $res[0][$i] . '%"';
+                $i++;
+            }
+        } elseif ($_POST['search_type'] == "search_by_description" || !empty($_GET['description'])) {
+            preg_match_all($pattern, $_SESSION['description'], $res);
+            $i = 0;
+            $sql = 'SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Description LIKE "%' . $res[0][$i] . '%"';
+            $i++;
+            while ($i < count($res[0])) {
+                $sql = $sql . 'UNION SELECT ImageID,PATH,Title,Description FROM travelimage WHERE Description LIKE "%' . $res[0][$i] . '%"';
+                $i++;
+            }
+        }
+        $num = $_SESSION['page'] * 18;
+        $sql = $sql . "LIMIT $num,18";
+        $statement = $pdo->query($sql);
+        if ($statement->rowCount() > 0) {
+            generate($statement);
+        } else {
+            echo '<h4>搜索无结果</h4>';
+        }
+        $pdo = null;
+    } catch (PDOException $e) {
+        $pdo = null;
+        echo '<script>alert("错误：无法连接到服务器")</script>';
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +114,6 @@ require_once('config.php');
     <link href="../css/my_ImageGroup.css" rel="stylesheet" type="text/css">
     <link href="../css/search.css" rel="stylesheet" type="text/css">
     <script src="../js/prefixfree.min.js" rel="script" type="text/javascript"></script>
-    <script src="../js/search.js" rel="script" type="text/javascript" defer></script>
 </head>
 <body>
 <header class="mainImg">
@@ -51,7 +148,7 @@ require_once('config.php');
 </aside>
 
 <main>
-    <form>
+    <form method="post" action="search.php">
         <h1>搜索</h1>
         <div class="search_box">
             <input type="radio" value="search_by_title" name="search_type" id="search_by_title" checked>
@@ -60,116 +157,122 @@ require_once('config.php');
             <input type="radio" value="search_by_description" name="search_type" id="search_by_description">
             <label for="search_by_description">按描述查询</label>
             <textarea type="search" name="description"></textarea>
-            <input type="submit" value="搜索" name="search" id="search" onclick="return false;">
+            <input type="submit" value="搜索" name="search" id="search">
         </div>
     </form>
     <section class="imgGroup">
-        <h2>结果</h2>
+        <?php
+        if (isset($_GET['submit']) || $_SERVER["REQUEST_METHOD"] == "POST") {
+            echo '<h2>结果</h2>';
+        }
+        ?>
         <ul>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/5855174537.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>富强、民主、文明、和谐、自由 、平等、公正、法治、爱国、敬业、诚信、友善</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/6114850721.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>一个幽灵，共产主义的幽灵，在欧洲大陆徘徊。为了对这个幽灵进行神圣的围剿，旧欧洲的一切势力，
-                            教皇和沙皇、梅特涅和基佐、法国的激进派和德国的警察，都联合起来了。
-                        </p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/8710247776.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>中国是世界上历史最悠久的国家之一。中国各族人民共同创造了光辉灿烂的文化，具有光荣的革命传统。</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/9493997865.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>“我志愿加入中国共-产-党,拥护党的纲领,遵守党的章程,履行党员义务;执行党的决定,严守党的纪律,
-                            保守党的秘密,对党忠诚,积极工作,为共-产主义奋斗终身,随时准备为党和人民牺牲一切,永不叛党。</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/222222.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>我志愿加入中国共产主义青年团,坚决拥护中国共产党的领导,遵守团的章程,执行团的决议,履行团员义务,
-                            严守团的纪律,勤奋学习,积极工作,吃苦在前,享受在后,为共产主义事业而奋斗。</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/8645912379.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>"Lorem ipsum dolor sit amet, consectetaur adipisicing elit, sed do eiusmod tempor
-                            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/6592317633.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>腾飞腾飞，振翅高飞</p>
-                    </div>
-                </a>
-            </li>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/6115548152.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>起来，饥寒交迫的奴隶！
-                            起来，全世界受苦的人！
-                            满腔的热血已经沸腾，
-                            要为真理而斗争！
-                        </p>
-                    </div>
-                </a>
-            </li>
-        </ul>
+            <?php
+            if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['search_type'] == "search_by_title" && $_POST['title'] != "") {
+                $_SESSION['title'] = $_POST['title'];
+                $_SESSION['description'] = null;
+                $_SESSION['page'] = 0;
+                $_SESSION['sum'] = 0;
+                fuzzyQueryFirst();
+            } elseif ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['search_type'] == "search_by_description" && $_POST['description'] != "") {
+                $_SESSION['title'] = null;
+                $_SESSION['description'] = $_POST['description'];
+                $_SESSION['page'] = 0;
+                $_SESSION['sum'] = 0;
+                fuzzyQueryFirst();
+            } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+                echo "<h4>请输入内容</h4>";
+            }
+            if (isset($_GET['title'])) {
+                $_SESSION['title'] = $_GET['title'];
+            }
+            if (isset($_GET['description'])) {
+                $_SESSION['description'] = $_GET['description'];
+            }
+            if (isset($_GET['submit'])) {
+                if (isset($_GET['page']) && $_GET['page'] != "") {
+                    $_SESSION['page'] = $_GET['page'];
+                    if ($_SESSION['page'] == 0) {
+                        fuzzyQueryFirst();
+                    } else {
+                        fuzzyQueryAgain();
+                    }
+                } else {
+                    fuzzyQueryFirst();
+                }
+            }
+
+            ?>
     </section>
 </main>
 <div id="pagination" class="pagination">
     <ul>
-        <li>首页</li>
-        <li><</li>
-        <li class="active">1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>></li>
-        <li>尾页</li>
+        <?php
+        if (($_SERVER["REQUEST_METHOD"] == "POST" && ($_POST['description'] != "" || $_POST['title'] != "")) || isset($_GET['submit'])) {
+            creatPageNumber();
+        }
+
+        function isActive($num)
+        {
+            if ($num == $_SESSION['page']) {
+                return "active";
+            } else {
+                return "";
+            }
+        }
+
+        function creatPageNumber()
+        {
+            $total = floor(($_SESSION['sum'] / 18) + 1);
+            if ($total > 1 && $total < 6) {
+                if ($_SESSION['page'] > 0) {
+                    echo '<a href="' . changePage(0) . '">首页</a>
+                <a href="' . changePage($_SESSION['page'] - 1) . '"><</a>';
+                }
+                for ($i = 0; $i < $total; $i++) {
+                    echo '<a href="' . changePage($i) . '" class="' . isActive($i) . '">' . ($i + 1) . '</a>';
+                }
+                if ($_SESSION['page'] < $total - 1) {
+                    echo '<a href="' . changePage($_SESSION['page'] + 1) . '"> > </a>';
+                    echo '<a href="' . changePage($total - 1) . ' ">尾页</a>';
+                }
+            } elseif ($total > 5) {
+                if ($_SESSION['page'] > 1) {
+                    echo '<a href="' . changePage(0) . '">首页</a>
+                <a href="' . changePage($_SESSION['page'] - 1) . '"> < </a>';
+                }
+                if ($_SESSION['page'] < 2) {
+                    for ($i = 0; $i < 5; $i++) {
+                        echo '<a href="' . changePage($i) . '" class="' . isActive($i) . '">' . ($i + 1) . '</a>';
+                    }
+                } else {
+                    for ($i = $_SESSION['page'] - 2; $i <= $i = $_SESSION['page'] + 2; $i++) {
+                        echo '<a href="' . changePage($i) . '" class="' . isActive($i) . '">' . ($i + 1) . '</a>';
+                    }
+                }
+                if ($_SESSION['page'] < $total - 1) {
+                    echo '<a href="' . changePage($_SESSION['page'] + 1) . '"> > </a>';
+                    echo '<a href="' . changePage($total - 1) . ' ">尾页</a>';
+                }
+            }
+        }
+
+        function changePage($num)
+        {
+            if (isset($_GET['title']) || $_POST['search_type'] == "search_by_title") {
+                $url = "search.php?page=" . $num;
+                $url = $url . "&title=" . $_SESSION['title'];
+                $url = $url . "&submit=搜索";
+                return $url;
+            } elseif (isset($_GET['description']) || $_POST['search_type'] == "search_by_description") {
+                $url = "search.php?page=" . $num;
+                $url = $url . "&description=" . $_SESSION['description'];
+                $url = $url . "&submit=搜索";
+                return $url;
+            }
+        }
+
+        ?>
     </ul>
 </div>
 <footer>

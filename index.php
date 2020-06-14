@@ -5,7 +5,7 @@ require_once('src/html/config.php');
 function generate($result)
 {
     while ($result->rowCount() > 0 && $row = $result->fetch()) {
-        echo '<li class="thumbnail">
+        echo '<li class="thumbnail" title="' . $row['Title'] . '">
                 <a href="src/html/details.php?imageid=' . $row['ImageID'] . '">
                     <div class="img-box">
                         <img src="src/travel-images/small/' . $row['PATH'] . '" alt="图片" width="260" height="200">
@@ -77,9 +77,9 @@ function generate($result)
     <a href="javascript:scroll(1)" class="arrowhead-right" id="ar">></a>
 </header>
 <!--内容-->
-<aside id="sidebar" class="sidebar" >
+<aside id="sidebar" class="sidebar">
     <a href="javascript:toTop()" id="toTop"><span>︿</span><span>Top</span></a>
-    <a href="src/html/refresh.php">刷  新</a>
+    <a href="src/html/refresh.php">刷 新</a>
 </aside>
 <main>
     <h2>免费精美图片</h2>
@@ -94,7 +94,7 @@ function generate($result)
                     generate($result);
                 } else {
                     $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-                    $sql = "SELECT * FROM travelimage ORDER BY RAND() LIMIT 10";
+                    $sql = "SELECT ImageID ,PATH,Title,Description FROM travelimage ORDER BY RAND() LIMIT 10";
                     $result = $pdo->query($sql);
                     generate($result);
                 }

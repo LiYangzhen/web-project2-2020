@@ -8,10 +8,9 @@ h2 {
 }
 
 main {
-    width: 85%;
+
     margin: 3rem auto 5rem;
 }
-
 
 .imgGroup ul {
     display: flex;
@@ -21,48 +20,18 @@ main {
     margin-right: 10%;
 }
 
-
 .thumbnail {
-    height: 250px;
+    height: 200px;
     width: 45%;
+    min-width: 400px;
     background: #e3e5e8;
     margin: 2rem;
     display: flex;
     flex-direction: row;
 }
 
-@media (max-width: 500px) {
-    ul li.thumbnail {
-        flex-direction: column;
-        width: 280px;
-        height: 380px;
-        margin: 1rem 0;
-    }
-
-    .thumbnail div.img-box {
-        width: 280px;
-        height: 210px;
-    }
-
-    ul .thumbnail a {
-        width: 280px;
-        height: 210px;
-    }
-
-    .thumbnail a img {
-        width: 280px;
-        height: 210px;
-    }
-
-    ul .thumbnail div p {
-        height: 5rem;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
+.thumbnail a div {
+    flex: 0 0 200px;
 }
 
 .thumbnail:hover {
@@ -75,34 +44,30 @@ main {
     text-decoration: none;
 }
 
-.thumbnail a div{
-    flex: 0 0 250px;
-}
-
 .thumbnail a div:last-of-type {
     margin-top: 1.5rem;
     margin-left: 1rem;
     flex: 1 1;
 }
 
-.thumbnail a .img-box {
+.thumbnail div.img-box {
     margin: 0;
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
     overflow: hidden;
     object-fit: cover;
     background-color: #232a34;
     cursor: pointer;
 }
 
-.thumbnail a .img-box img {
-    width: 250px;
-    height: 250px;
+.thumbnail .img-box img {
+    width: 200px;
+    height: 200px;
     object-fit: cover;
     transition: all .4s cubic-bezier(.645, .045, .355, 1);
 }
 
-.thumbnail a .img-box:hover img{
+.thumbnail a .img-box:hover img {
     transform: scale(1.1);
 }
 
@@ -110,10 +75,10 @@ main {
     color: #a9a9a9;
     font-size: 1.6rem;
     margin: 1rem 3rem 0;
-    height: 13rem;
+    height: 8rem;
     display: -webkit-box;
     -webkit-box-orient: vertical;
-    -webkit-line-clamp: 5;
+    -webkit-line-clamp: 3;
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -122,8 +87,13 @@ main {
     color: black;
     font-size: 2.2rem;
     margin: 0.7rem 2.9rem 0;
+    height: 7rem;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
 
 
 .thumbnail div form {
@@ -162,4 +132,18 @@ main {
 
 .thumbnail div input[name="delete"]:hover {
     background: #FF0000;
+}
+
+@media (max-width: 1200px) {
+    .thumbnail .img-box {
+        width: 160px;
+    }
+
+    .thumbnail a .img-box img {
+        width: 160px;
+    }
+
+    .thumbnail a div {
+        flex: 0 0 160px;
+    }
 }
