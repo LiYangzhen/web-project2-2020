@@ -89,6 +89,10 @@ window.onscroll = function () {
 
 ///////////////////////// 上传图片预览
 if (fileName.includes("upload")) {
+    if(document.getElementById("removeBut")){
+        removeBut();
+    }
+
     document.getElementById("ImagesUpload").addEventListener("change", function () {
         let reader = new FileReader();
         reader.readAsDataURL(document.getElementById("ImagesUpload").files[0]);
@@ -96,9 +100,31 @@ if (fileName.includes("upload")) {
             let result = reader.result;
             let image = document.createElement("img");
             image.src = result;
+            image.id = "preImage"
             document.getElementById("img-preview").appendChild(image);
         }
-    })
+        let button = document.getElementById("ImgUpBtn");
+        button.style.display = "none";
+        let deletePicture = document.createElement("button");
+        let text = document.createTextNode("删 除");
+        deletePicture.appendChild(text);
+        deletePicture.id = "removeBut";
+        document.getElementById("removeBox").appendChild(deletePicture);
+        removeBut();
+    });
+
+    function removeBut() {
+        document.getElementById("removeBut").addEventListener("click", function () {
+            let image = document.getElementById("preImage");
+            image.parentNode.removeChild(image);
+            let obj = document.getElementById("ImagesUpload");
+            obj.value = "";
+            let button = document.getElementById("ImgUpBtn");
+            button.style.display = "flex";
+            let self =document.getElementById("removeBut");
+            self.parentNode.removeChild(self);
+        });
+    }
 }
 
 

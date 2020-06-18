@@ -56,9 +56,9 @@ function generate($result)
             echo '<div class="dropdown-menu">
                       <a href="">个人中心</a>
                       <ul>
-                <li class="menu_item"><a href="src/html/upload.html" class="upload">上传图片</a></li>
-                <li class="menu_item"><a href="src/html/my_photos.html" class="my-pictures">我的图片</a></li>
-                <li class="menu_item"><a href="src/html/my_favourite.html" class="collections">我的收藏</a></li>
+                <li class="menu_item"><a href="src/html/upload.php" class="upload">上传图片</a></li>
+                <li class="menu_item"><a href="src/html/my_photos.php" class="my-pictures">我的图片</a></li>
+                <li class="menu_item"><a href="src/html/my_favourite.php" class="collections">我的收藏</a></li>
                  <li class="menu_item"><a href="src/html/logout.php" class="logout">退出登录</a></li>
                 </ul>
                 </div>';

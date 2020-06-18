@@ -39,13 +39,13 @@ label textarea.description {
     border: #888888 1px solid;
 }
 
-.ImagesUpload{
+.ImagesUpload {
     display: flex;
     flex-flow: row wrap;
     justify-content: center;
 }
 
-.ImagesUpload img{
+.ImagesUpload img {
     width: 35%;
     margin: 2rem 1rem;
     object-fit: scale-down;
@@ -97,4 +97,26 @@ input[type="submit"]:hover {
     transform: translateY(3px);
     box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.58);
     transition: .5s all;
+}
+
+#removeBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#removeBut {
+    color: white;
+    alignment: center;
+    font-size: 2rem;
+    height: 2.5rem;
+    width: 7rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #DC143C;
+}
+
+#removeBut:hover {
+    background-color: #FF0000;
+    cursor: pointer;
 }
