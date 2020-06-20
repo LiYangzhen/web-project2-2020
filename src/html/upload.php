@@ -3,33 +3,21 @@ session_start();
 require_once('config.php');
 
 
+define('ROOT', dirname(dirname(__FILE__)) . '/travel-images/');
+
 function upload()
 {
     $allowedExts = array("gif", "jpeg", "jpg", "png");
     $temp = explode(".", $_FILES["file"]["name"]);
-    echo $_FILES["file"]["size"];
+    echo '<script>alert(' . $_FILES["file"]["name"] . ')</script>';
     $extension = end($temp);     // 获取文件后缀名
-    if ((($_FILES["file"]["type"] == "image/gif")
-            || ($_FILES["file"]["type"] == "image/jpeg")
-            || ($_FILES["file"]["type"] == "image/jpg")
-            || ($_FILES["file"]["type"] == "image/pjpeg")
-            || ($_FILES["file"]["type"] == "image/x-png")
-            || ($_FILES["file"]["type"] == "image/png"))
-        && ($_FILES["file"]["size"] < 102400)   // 小于 10 MB
-        && in_array($extension, $allowedExts)) {
+    if (($_FILES["file"]["size"] < 5 * 1024 * 1024) && in_array($extension, $allowedExts)) {
         if ($_FILES["file"]["error"] > 0) {
             echo "错误：: " . $_FILES["file"]["error"] . "<br>";
         } else {
-            echo "上传文件名: " . $_FILES["file"]["name"] . "<br>";
-            echo "文件类型: " . $_FILES["file"]["type"] . "<br>";
-            echo "文件大小: " . ($_FILES["file"]["size"] / 1024) . " kB<br>";
-            echo "文件临时存储的位置: " . $_FILES["file"]["tmp_name"] . "<br>";
-
-            // 判断当前目录下的 upload 目录是否存在该文件
-            // 如果没有 upload 目录，你需要创建它，upload 目录权限为 777
-            if (file_exists("upload/" . $_FILES["file"]["name"])) {
+            if (file_exists(ROOT . 'upload/' . $_FILES["file"]["name"])) {
                 echo '<script>alert(" 该文件已经存在! ")</script>';
-            } else {
+            } elseif (is_uploaded_file($_FILES['file']['tmp_name'])) {
                 try {
                     $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
                     $iso = "";
@@ -56,39 +44,152 @@ function upload()
                         $iso = $row['ISO'];
                     }
 
-                    $sql = 'INSERT INTO travelimage (Title,Description,Latitude,Longitude,CityCode,CountryCodeISO,UID,PATH,Content) VALUES (:title,:description,:latitude,:longitude,:citycode,:iso,:uid,:path,:content)';
+                    $sql = 'SELECT MAX(ImageID) FROM travelimage';
+                    $statement = $pdo->query($sql);
+                    $row = $statement->fetch();
+                    $imageid = $row[0] + 1;
+
+
+                    $sql = 'INSERT INTO travelimage (ImageID,Title,Description,Latitude,Longitude,CityCode,CountryCodeISO,UID,PATH,Content) VALUES (:imageid,:title,:description,:latitude,:longitude,:citycode,:iso,:uid,:path,:content)';
                     $statement = $pdo->prepare($sql);
-                    $statement->bindValue(':title', $_POST['title']);
-                    $statement->bindValue(':description', $_POST['description']);
-                    $statement->bindValue(':latitude', $latitude);
-                    $statement->bindValue(':longitude', $longitude);
-                    $statement->bindValue(':citycode', $citycode);
-                    $statement->bindValue(':iso', $iso);
-                    $statement->bindValue(':uid', $_SESSION['id']);
-                    $statement->bindValue(':path', '../travel-images/large/' . $_FILES["file"]["name"]);
-                    $statement->bindValue(':content', $_POST['content']);
+                    $statement->bindValue(':imageid', (int)$imageid);
+                    $statement->bindValue(':title', (string)$_POST['title']);
+                    $statement->bindValue(':description', (string)$_POST['description']);
+                    $statement->bindValue(':latitude', (double)$latitude);
+                    $statement->bindValue(':longitude', (double)$longitude);
+                    $statement->bindValue(':citycode', (double)$citycode);
+                    $statement->bindValue(':iso', (string)$iso);
+                    $statement->bindValue(':uid', (int)$_SESSION['id']);
+                    $statement->bindValue(':path', (string)$_FILES["file"]["name"]);
+                    $statement->bindValue(':content', (string)$_POST['content']);
                     $statement->execute();
 
                     if ($statement) {
-                        move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $_FILES["file"]["name"]);
-                        echo "文件存储在: " . "upload/" . $_FILES["file"]["name"];
-
-                        header("location: login.php");
+                        $stored_path = ROOT . "upload/" . basename($_FILES['file']['name']);
+                        if (move_uploaded_file($_FILES["file"]["tmp_name"], $stored_path)) {
+                            compressedImage($stored_path, ROOT . "large/" . basename($_FILES['file']['name']), 1024);
+                            compressedImage($stored_path, ROOT . "medium/" . basename($_FILES['file']['name']), 640);
+                            compressedImage($stored_path, ROOT . "small/" . basename($_FILES['file']['name']), 320);
+                            compressedImage($stored_path, ROOT . "thumb/" . basename($_FILES['file']['name']), 100);
+                            echo '<script>alert("文件上传成功")</script>';
+                            header("location: my_photos.php");
+                        } else {
+                            echo '<script>alert("文件转存失败")</script>';
+                        }
                     } else {
-                        '<script>alert("文件上传失败")</script>';
+                        echo '<script>alert("文件上传失败")</script>';
                     }
 
                     $pdo = null;
                 } catch (PDOException $e) {
-                    '<script>alert("服务器连接出错")</script>';
+                    echo '<script>alert("服务器连接出错")</script>';
                 }
             }
         }
     } else {
-        echo '<script>alert("非法的文件格式，请使用jpg、jpeg、pjpeg、png、x-png、gif图片格式")</script>';
+        echo '<script>alert("图片大小不能超过5MB")</script>';
     }
 }
 
+function edit()
+{
+    try {
+        $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+        $iso = "";
+        $latitude = "";
+        $longitude = "";
+        $citycode = "";
+
+        if ($_POST['city'] != 'placeholder') {
+            $sql = 'SELECT Latitude,Longitude,GeoNameID,CountryCodeISO FROM geocities WHERE AsciiName=:city LIMIT 1';
+            $statement = $pdo->prepare($sql);
+            $statement->bindValue(':city', $_POST['city']);
+            $statement->execute();
+            $row = $statement->fetch();
+            $iso = $row['CountryCodeISO'];
+            $latitude = $row['Latitude'];
+            $longitude = $row['Longitude'];
+            $citycode = $row['GeoNameID'];
+        } else {
+            $sql = 'SELECT ISO FROM geocountries WHERE CountryName=:countryname';
+            $statement = $pdo->prepare($sql);
+            $statement->bindValue(':countryname', $_POST['country']);
+            $statement->execute();
+            $row = $statement->fetch();
+            $iso = $row['ISO'];
+        }
+
+        $sql = 'UPDATE travelimage SET Title=:title,Description=:description,Latitude=:latitude,Longitude=:longitude,CityCode=:citycode,CountryCodeISO=:iso,Content=:content WHERE ImageID=:imageid';
+        $statement = $pdo->prepare($sql);
+        $statement->bindValue(':imageid', $_GET['imageid']);
+        $statement->bindValue(':title', $_POST['title']);
+        $statement->bindValue(':description', $_POST['description']);
+        $statement->bindValue(':latitude', $latitude);
+        $statement->bindValue(':longitude', $longitude);
+        $statement->bindValue(':citycode', $citycode);
+        $statement->bindValue(':iso', $iso);
+        $statement->bindValue(':content', $_POST['theme']);
+        $statement->execute();
+        $row = $statement->rowCount();
+
+        if ($row) {
+            echo '<script>alert("文件修改成功")</script>';
+        } else {
+            echo '<script>alert("文件修改失败")</script>';
+        }
+//        header("location: my_photos.php");
+        $pdo = null;
+    } catch (PDOException $e) {
+        echo '<script>alert("服务器连接出错")</script>';
+    }
+}
+
+function compressedImage($imgsrc, $imgdst, $goal)
+{
+    list($width, $height, $type) = getimagesize($imgsrc);
+    $new_width = $width;//压缩后的图片宽
+    $new_height = $height;//压缩后的图片高
+    if ($width >= $goal) {
+        $per = $goal / $width;//计算比例
+        $new_width = $width * $per;
+        $new_height = $height * $per;
+    }
+    switch ($type) {
+        case 1:
+            $giftype = check_gifcartoon($imgsrc);
+            if ($giftype) {
+                header('Content-Type:image/gif');
+                $image_wp = imagecreatetruecolor($new_width, $new_height);
+                $image = imagecreatefromgif($imgsrc);
+                imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+                //90代表的是质量、压缩图片容量大小
+                imagejpeg($image_wp, $imgdst, 90);
+                imagedestroy($image_wp);
+                imagedestroy($image);
+            }
+            break;
+        case 2:
+            header('Content-Type:image/jpeg');
+            $image_wp = imagecreatetruecolor($new_width, $new_height);
+            $image = imagecreatefromjpeg($imgsrc);
+            imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+            //90代表的是质量、压缩图片容量大小
+            imagejpeg($image_wp, $imgdst, 90);
+            imagedestroy($image_wp);
+            imagedestroy($image);
+            break;
+        case 3:
+            header('Content-Type:image/png');
+            $image_wp = imagecreatetruecolor($new_width, $new_height);
+            $image = imagecreatefrompng($imgsrc);
+            imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
+            //90代表的是质量、压缩图片容量大小
+            imagejpeg($image_wp, $imgdst, 90);
+            imagedestroy($image_wp);
+            imagedestroy($image);
+            break;
+    }
+}
 
 ?>
 
@@ -120,7 +221,7 @@ function upload()
                 <li class="menu_item highlight"><a href="upload.php" class="upload">上传图片</a></li>
                 <li class="menu_item"><a href="my_photos.php" class="my-pictures">我的图片</a></li>
                 <li class="menu_item"><a href="my_favourite.php" class="collections">我的收藏</a></li>
-                <li class="menu_item"><a href="login.php" class="log-in">登录</a></li>
+                <li class="menu_item"><a href="logout.php" class="logout">退出登录</a></li>
             </ul>
         </div>
     </nav>
@@ -131,9 +232,35 @@ function upload()
 </aside>
 
 <main>
-    <form action="upload.php" method="post"><h3>选择图片</h3>
+        <?php
+        if (isset($_GET['imageid'])) {
+            try {
+                $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+                $sql = "select Description,Title,PATH from travelimage where ImageID=:imageid";
+                $result = $pdo->prepare($sql);
+                $result->bindValue(':imageid', $_GET['imageid']);
+                $result->execute();
+                $figure = $result->fetch();
+                $description = $figure['Description'];
+                $title = $figure['Title'];
+                $path = $figure['PATH'];
+
+                echo '<form action="upload.php?imageid='.$_GET['imageid'].'" method="post" enctype="multipart/form-data">
+        <h3>选择图片</h3>
+        <div class="ImagesUpload" id="img-preview"><img src="../travel-images/large/' . $path . '"></div>
+        <label><p>图片标题</p>
+            <input type="text" name="title" class="title" value="' . $title . '" required>
+        </label>
+        <label><p>图片描述</p>
+            <textarea name="description" class="description">' . $description . '</textarea></label>';
+            } catch (PDOException $e) {
+                echo '<script>alert("服务器错误！")</script>';
+            }
+        } else {
+            echo '<form action="upload.php" method="post" enctype="multipart/form-data">
+        <h3>选择图片</h3>
         <label for="ImagesUpload" id="ImgUpBtn" class="ImgUpBtnBox">
-            <input type="file" accept="image/*" name="ImagesUpload" id="ImagesUpload" class="uploadHide">
+            <input type="file" accept="image/*" name="file" id="ImagesUpload" class="uploadHide">
             <img src="../image/add.svg" class="uploadBtnImg" width="32" height="32"/>
         </label>
         <div class="ImagesUpload" id="img-preview"></div>
@@ -141,21 +268,43 @@ function upload()
         <label><p>图片标题</p>
             <input type="text" name="title" class="title" required>
         </label>
-        <label><p>图片描述</p>
-            <textarea name="description" class="description" required></textarea>
-        </label>
-        <label><p>拍摄国家</p>
-            <input type="text" name="country" class="country" required>
-        </label>
-        <label><p>拍摄城市</p>
-            <input type="text" name="city" class="city" required>
-        </label>
-        <?php
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            upload();
+         <label><p>图片描述</p>
+            <textarea name="description" class="description"></textarea></label>';
         }
         ?>
-        <input type="submit" class="submit" value="上传">
+
+        <label>
+            <select name="theme" required>
+                <option value="placeholder" selected disabled>按主题筛选</option>
+                <option value="scenery">scenery</option>
+                <option value="city">city</option>
+                <option value="people">people</option>
+                <option value="animal">animal</option>
+                <option value="building">building</option>
+                <option value="wonder">wonder</option>
+                <option value="other">other</option>
+            </select>
+            <select name="country" id="country" onchange="addOption()">
+                <option value="placeholder" selected>按国家筛选</option>
+            </select>
+            <select name="city" id="city"></select>
+        </label>
+
+        <?php
+        if (isset($_GET['imageid'])) {
+            echo '<input type="submit" name="edit" class="submit" value="修改">';
+        } else {
+            echo '<input type="submit" name="upload" class="submit" value="上传">';
+        }
+        ?>
+
+        <?php
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload'])) {
+            upload();
+        } elseif ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit'])) {
+            edit();
+        }
+        ?>
     </form>
 </main>
 
@@ -194,6 +343,6 @@ function upload()
         </ul>
     </div>
 </footer>
-<script src="../js/UIscript.js" rel="script" type="text/javascript"></script>
+<script src="../js/UIscript.js" rel="script" type="text/javascript" defer></script>
 </body>
 </html>

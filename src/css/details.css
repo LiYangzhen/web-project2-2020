@@ -1,3 +1,10 @@
+html, main {
+    min-height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
 main {
     width: 75%;
     margin-left: auto;
@@ -51,7 +58,7 @@ li span {
     margin-right: 1.5rem;
 }
 
-li.collection_number{
+li.collection_number {
     font-size: 3rem;
     font-weight: bold;
     color: #FF0000;
@@ -60,7 +67,7 @@ li.collection_number{
     position: relative;
 }
 
-li button{
+li .collect {
     margin-left: auto;
     font-size: 2rem;
     font-weight: bold;
@@ -75,7 +82,12 @@ li button{
     border: none;
 }
 
-li button:hover,li button .favor{
+li .collect:hover {
+    background-image: url("../image/collect_hover.png");
+    cursor: pointer;
+}
+
+li .favor {
     background-image: url("../image/collect_hover.png");
     cursor: pointer;
 }
@@ -87,7 +99,7 @@ article {
     margin: 2rem auto 4rem;
 }
 
-article p{
+article p {
     font-size: 1.75rem;
     color: black;
 }

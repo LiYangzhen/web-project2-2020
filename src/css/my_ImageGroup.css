@@ -7,8 +7,14 @@ h2 {
     letter-spacing: 1rem;
 }
 
-main {
+html,main{
+    min-height: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
 
+main {
     margin: 3rem auto 5rem;
 }
 
@@ -25,9 +31,9 @@ main {
     width: 45%;
     min-width: 400px;
     background: #e3e5e8;
-    margin: 2rem;
+    margin: 3rem 2rem;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
 }
 
 .thumbnail a div {
@@ -96,16 +102,19 @@ main {
 }
 
 
-.thumbnail div form {
-    margin: 0.7rem 2.9rem 0;
+.thumbnail .editBox {
+    margin: 1rem 0 0;
     font-size: 1.7rem;
+    display: flex;
+    flex-flow: row;
 }
 
-.thumbnail form input {
+.thumbnail .editBox a {
     padding: 5px 10px;
     margin-left: 1rem;
     margin-right: 1rem;
     color: white;
+    text-decoration: none;
     /*background-color: #45547a;*/
     /*background-image: linear-gradient(#45547a, #37466E);*/
     background: #6439af;
@@ -115,22 +124,22 @@ main {
     transition: all 100ms ease-in-out;
 }
 
-.thumbnail div input:first-of-type {
+.thumbnail .editBox a:first-of-type {
     margin-left: 0;
 }
 
-.thumbnail div input:hover {
+.thumbnail .editBox a:hover {
     background: #8a2be2;
     box-shadow: 0 0 2px 1px #999999;
     transform: scale(1.05);
     cursor: pointer;
 }
 
-.thumbnail div input[name="delete"] {
+.thumbnail .editBox a[name="delete"] {
     background: #DC143C;
 }
 
-.thumbnail div input[name="delete"]:hover {
+.thumbnail .editBox a [name="delete"]:hover {
     background: #FF0000;
 }
 

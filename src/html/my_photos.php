@@ -2,10 +2,12 @@
 session_start();
 require_once('config.php');
 
+$_SESSION['showNum'] = 18;
+
 function generate($result)
 {
     $i = 0;
-    while (($row = $result->fetch()) && $i < 18) {
+    while (($row = $result->fetch()) && $i < $_SESSION['showNum']) {
         echo '<li class="thumbnail" title="' . $row['Title'] . '">
                 <a href="details.php?imageid=' . $row['ImageID'] . '">
                     <div class="img-box">
@@ -17,7 +19,7 @@ function generate($result)
                 </a>
                 <div class="editBox">
                      <a href="upload.php?imageid=' . $row['ImageID'] . '">编辑</a>
-                     <a href="deleteMyPicture.php?imageid=' . $row['ImageID'] . '">删除</a>
+                     <a href="delete.php?imageid=' . $row['ImageID'] . '">删除</a>
                 </div>
             </li>';
         $i++;
@@ -28,7 +30,9 @@ function generateMine()
 {
     try {
         $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-        $sql = 'SELECT ImageID,PATH,Title,Description FROM travelimage WHERE UID=:id';
+        $num = $_SESSION['page'] * 18;
+        $max = $_SESSION['showNum'];
+        $sql = "SELECT ImageID,PATH,Title,Description FROM travelimage WHERE UID=:id LIMIT $num,$max";
         $statement = $pdo->prepare($sql);
         $statement->bindValue(':id', $_SESSION['id']);
         $statement->execute();
@@ -37,10 +41,30 @@ function generateMine()
         } else {
             echo '<h4>您还未上传过图片</h4>';
         }
-    }catch (PDOException $e){
+        $pdo = null;
+    } catch (PDOException $e) {
         echo '<h4>服务器连接错误</h4>';
     }
 }
+
+function countSum()
+{
+    try {
+        $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+        $sql = 'SELECT count(*) FROM travelimage WHERE UID=:id';
+        $statement = $pdo->prepare($sql);
+        $statement->bindValue(':id', $_SESSION['id']);
+        $statement->execute();
+        $row = $statement->fetch();
+        $_SESSION['sum'] = $row[0];
+        $_SESSION['page'] = 0;
+        generateMine();
+        $pdo = null;
+    } catch (PDOException $e) {
+        echo '<h4>服务器连接错误</h4>';
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -71,7 +95,7 @@ function generateMine()
                 <li class="menu_item"><a href="upload.php" class="upload">上传图片</a></li>
                 <li class="menu_item highlight"><a href="my_photos.php" class="my-pictures">我的图片</a></li>
                 <li class="menu_item"><a href="my_favourite.php" class="collections">我的收藏</a></li>
-                <li class="menu_item"><a href="login.php" class="log-in">登录</a></li>
+                <li class="menu_item"><a href="logout.php" class="logout">退出登录</a></li>
             </ul>
         </div>
     </nav>
@@ -85,37 +109,75 @@ function generateMine()
     <h2>我的图片</h2>
     <section class="imgGroup">
         <ul>
-            <li class="thumbnail">
-                <a href="details.php">
-                    <div class="img-box">
-                        <img src="../travel-images/small/5855174537.jpg" alt="图片">
-                    </div>
-                    <div><h3>Title</h3>
-                        <p>富强、民主、文明、和谐、自由 、平等、公正、法治、爱国、敬业、诚信、友善</p>
-
-                    </div>
-                </a>
-                <form>
-                    <input type="button" value="编辑" name="edit" onclick="location.href=('upload.html')">
-                    <input type="button" value="删除" name="delete" onclick="alert('没了！')">
-                </form>
-            </li>
-
+            <?php
+            if (!isset($_GET['page'])) {
+                countSum();
+            } else {
+                $_SESSION['page'] = $_GET['page'];
+                generateMine();
+            }
+            ?>
         </ul>
     </section>
 </main>
 
 <div id="pagination" class="pagination">
     <ul>
-        <li>首页</li>
-        <li><</li>
-        <li class="active">1</li>
-        <li>2</li>
-        <li>3</li>
-        <li>4</li>
-        <li>5</li>
-        <li>></li>
-        <li>尾页</li>
+        <?php
+        creatPageNumber();
+
+        function isActive($num)
+        {
+            if ($num == $_SESSION['page']) {
+                return "active";
+            } else {
+                return "";
+            }
+        }
+
+        function creatPageNumber()
+        {
+            $total = floor(($_SESSION['sum'] / $_SESSION['showNum']) + 1);
+            if ($total > 1 && $total < 6) {
+                if ($_SESSION['page'] > 0) {
+                    echo '<a href="' . changePage(0) . '">首页</a>
+                <a href="' . changePage($_SESSION['page'] - 1) . '"><</a>';
+                }
+                for ($i = 0; $i < $total; $i++) {
+                    echo '<a href="' . changePage($i) . '" class="' . isActive($i) . '">' . ($i + 1) . '</a>';
+                }
+                if ($_SESSION['page'] < $total - 1) {
+                    echo '<a href="' . changePage($_SESSION['page'] + 1) . '"> > </a>';
+                    echo '<a href="' . changePage($total - 1) . ' ">尾页</a>';
+                }
+            } elseif ($total > 5) {
+                if ($_SESSION['page'] > 1) {
+                    echo '<a href="' . changePage(0) . '">首页</a>
+                <a href="' . changePage($_SESSION['page'] - 1) . '"> < </a>';
+                }
+                if ($_SESSION['page'] < 2) {
+                    for ($i = 0; $i < 5; $i++) {
+                        echo '<a href="' . changePage($i) . '" class="' . isActive($i) . '">' . ($i + 1) . '</a>';
+                    }
+                } else {
+                    for ($i = $_SESSION['page'] - 2; $i <= $i = $_SESSION['page'] + 2; $i++) {
+                        echo '<a href="' . changePage($i) . '" class="' . isActive($i) . '">' . ($i + 1) . '</a>';
+                    }
+                }
+                if ($_SESSION['page'] < $total - 1) {
+                    echo '<a href="' . changePage($_SESSION['page'] + 1) . '"> > </a>';
+                    echo '<a href="' . changePage($total - 1) . ' ">尾页</a>';
+                }
+            }
+        }
+
+        function changePage($num)
+        {
+            $url = "my_photos.php?page=" . $num;
+            return $url;
+        }
+
+        ?>
     </ul>
 </div>
 

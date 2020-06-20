@@ -137,7 +137,7 @@ function generate($result)
                     <div class="icon-button-group">
                         <a class="weChat" href=""> </a>
                         <a class="qq" href=""> </a>
-                        <a class="github" href=""> </a>
+                        <a class="github" href="https://github.com/LiYangzhen/web-project2-2020"> </a>
                         <a class="email" href=""> </a>
                     </div>
                 </li>

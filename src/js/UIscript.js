@@ -88,8 +88,8 @@ window.onscroll = function () {
 };
 
 ///////////////////////// 上传图片预览
-if (fileName.includes("upload")) {
-    if(document.getElementById("removeBut")){
+if (fileName.includes("upload") && !fileName.includes("imageid")) {
+    if (document.getElementById("removeBut")) {
         removeBut();
     }
 
@@ -121,7 +121,7 @@ if (fileName.includes("upload")) {
             obj.value = "";
             let button = document.getElementById("ImgUpBtn");
             button.style.display = "flex";
-            let self =document.getElementById("removeBut");
+            let self = document.getElementById("removeBut");
             self.parentNode.removeChild(self);
         });
     }
@@ -167,10 +167,6 @@ window.onload = function () {
 };
 
 /////////////////////// 二级联动
-
-if (fileName.includes("browse")) {
-    allCity();
-}
 
 
 // const city = {
@@ -428,14 +424,14 @@ var city = {
     'Zimbabwe': ['Banket', 'Beatrice', 'Beitbridge', 'Bindura', 'Binga', 'Bulawayo', 'Centenary', 'Chakari', 'Chegutu', 'Chimanimani', 'Chinhoyi', 'Chipinge', 'Chiredzi', 'Chirundu', 'Chitungwiza', 'Chivhu', 'Concession', 'Dete', 'Dorowa Mining Lease', 'Epworth', 'Esigodini', 'Filabusi', 'Glendale', 'Gokwe', 'Gwanda', 'Gweru', 'Harare', 'Headlands', 'Hwange', 'Insiza', 'Inyathi', 'Kadoma', 'Kamativi Mine', 'Kariba', 'Karoi', 'Kwekwe', 'Lalapanzi', 'Lupane', 'Macheke', 'Marondera', 'Mashava', 'Masvingo', 'Mazoe', 'Mhangura', 'Mount Darwin', 'Murehwa', 'Mutare', 'Mutoko', 'Mvuma', 'Mvurwi', 'Norton', 'Nyanga', 'Nyazura', 'Odzi', 'Penhalonga', 'Plumtree', 'Raffingora', 'Redcliff', 'Rusape', 'Shamva', 'Shangani', 'Shurugwi', 'Victoria Falls', 'Zvishavane']
 };
 
-if (fileName.includes("browse")) {
+if (fileName.includes("browse") || fileName.includes("upload")) {
     allCity();
 }
 
 function allCity() {
     let select1 = document.getElementById("country");
     for (i in city) {
-        select1.add(new Option(i, i), null);
+        select1.appendChild(new Option(i, i));
     }
     addOption(); // 初始化选项
 }
@@ -443,14 +439,14 @@ function allCity() {
 function addOption() {
     let select2 = document.getElementById("city");
     let select1 = document.getElementById("country").value;
-    select2.length = 0; //清空一下市级菜单
+    select2.innerHTML = ""; //清空一下市级菜单
     if (select1 != 'placeholder') {
-        select2.add(new Option("请选择城市", "placeholder"), null);
+        select2.appendChild(new Option("请选择城市", "placeholder"));
         for (let i in city[select1]) {
-            select2.add(new Option(city[select1][i], city[select1][i]), null);
+            select2.appendChild(new Option(city[select1][i], city[select1][i]));
         }
     } else {
         select2.length = 0;
-        select2.add(new Option("按城市筛选", "placeholder"), null);
+        select2.appendChild(new Option("按城市筛选", "placeholder"));
     }
 }

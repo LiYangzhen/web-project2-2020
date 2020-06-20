@@ -61,9 +61,9 @@ require_once('config.php');
         $theme = $figure['Content'];
         $description = $figure['Description'];
         $title = $figure['Title'];
-        $path=$figure['PATH'];
+        $path = $figure['PATH'];
 
-        $sql = "select UID from travelimage join travelimagefavor on travelimage.ImageID=travelimagefavor.ImageID where travelimage.ImageID=:imageid";
+        $sql = "select travelimagefavor.UID from  travelimagefavor join travelimage on travelimage.ImageID=travelimagefavor.ImageID where travelimage.ImageID=:imageid";
         $result = $pdo->prepare($sql);
         $result->bindValue(':imageid', $_GET['imageid']);
         $result->execute();
@@ -74,7 +74,7 @@ require_once('config.php');
                 $collected = true;
             }
         }
-        $collected = $collected ? "favor" : "";
+        $collectedClass = $collected ? "favor" : "";
 
         $sql = "select CountryName from travelimage join geocountries on travelimage.CountryCodeISO=geocountries.ISO where ImageID=:imageid";
         $result = $pdo->prepare($sql);
@@ -97,7 +97,7 @@ require_once('config.php');
         <div class="content">
             <ul>
                 <li>收藏人数</li>
-                <li class="collection_number"><span>' . $favor . '</span><button onclick="alert(\'已收藏\')" class="' . $collected . '"></button></li>
+                <li class="collection_number"><span>' . $favor . '</span><a href="collect.php?imageid=' . $_GET['imageid'] . '&collected='.$collected.'" class="' . $collectedClass . ' collect"></a></li>
             </ul>
             <ul>
                 <li>图片信息</li>
