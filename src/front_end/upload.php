@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('config.php');
+require_once(dirname(dirname(__FILE__)).'/rear_end/config.php');
 
 
 define('ROOT', dirname(dirname(__FILE__)) . '/travel-images/');
@@ -96,9 +96,10 @@ function edit()
     try {
         $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
         $iso = "";
-        $latitude = "";
-        $longitude = "";
-        $citycode = "";
+        $description = "";
+        $latitude = null;
+        $longitude = null;
+        $citycode = null;
 
         if ($_POST['city'] != 'placeholder') {
             $sql = 'SELECT Latitude,Longitude,GeoNameID,CountryCodeISO FROM geocities WHERE AsciiName=:city LIMIT 1';
@@ -119,16 +120,22 @@ function edit()
             $iso = $row['ISO'];
         }
 
+        if ($_POST['theme'] == "placeholder" || $_POST['theme'] == null) {
+            $theme = 'other';
+        } else {
+            $theme = $_POST['theme'];
+        }
+
         $sql = 'UPDATE travelimage SET Title=:title,Description=:description,Latitude=:latitude,Longitude=:longitude,CityCode=:citycode,CountryCodeISO=:iso,Content=:content WHERE ImageID=:imageid';
         $statement = $pdo->prepare($sql);
-        $statement->bindValue(':imageid', $_GET['imageid']);
-        $statement->bindValue(':title', $_POST['title']);
-        $statement->bindValue(':description', $_POST['description']);
+        $statement->bindValue(':imageid', (int)$_GET['imageid']);
+        $statement->bindValue(':title', (string)$_POST['title']);
+        $statement->bindValue(':description', (string)$_POST['description']);
         $statement->bindValue(':latitude', $latitude);
         $statement->bindValue(':longitude', $longitude);
         $statement->bindValue(':citycode', $citycode);
         $statement->bindValue(':iso', $iso);
-        $statement->bindValue(':content', $_POST['theme']);
+        $statement->bindValue(':content', $theme);
         $statement->execute();
         $row = $statement->rowCount();
 
@@ -137,7 +144,7 @@ function edit()
         } else {
             echo '<script>alert("文件修改失败")</script>';
         }
-//        header("location: my_photos.php");
+        header("location: my_photos.php");
         $pdo = null;
     } catch (PDOException $e) {
         echo '<script>alert("服务器连接出错")</script>';
@@ -221,7 +228,7 @@ function compressedImage($imgsrc, $imgdst, $goal)
                 <li class="menu_item highlight"><a href="upload.php" class="upload">上传图片</a></li>
                 <li class="menu_item"><a href="my_photos.php" class="my-pictures">我的图片</a></li>
                 <li class="menu_item"><a href="my_favourite.php" class="collections">我的收藏</a></li>
-                <li class="menu_item"><a href="logout.php" class="logout">退出登录</a></li>
+                <li class="menu_item"><a href="../rear_end/logout.php" class="logout">退出登录</a></li>
             </ul>
         </div>
     </nav>
@@ -232,20 +239,20 @@ function compressedImage($imgsrc, $imgdst, $goal)
 </aside>
 
 <main>
-        <?php
-        if (isset($_GET['imageid'])) {
-            try {
-                $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-                $sql = "select Description,Title,PATH from travelimage where ImageID=:imageid";
-                $result = $pdo->prepare($sql);
-                $result->bindValue(':imageid', $_GET['imageid']);
-                $result->execute();
-                $figure = $result->fetch();
-                $description = $figure['Description'];
-                $title = $figure['Title'];
-                $path = $figure['PATH'];
+    <?php
+    if (isset($_GET['imageid'])) {
+        try {
+            $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
+            $sql = "select Description,Title,PATH from travelimage where ImageID=:imageid";
+            $result = $pdo->prepare($sql);
+            $result->bindValue(':imageid', $_GET['imageid']);
+            $result->execute();
+            $figure = $result->fetch();
+            $description = $figure['Description'];
+            $title = $figure['Title'];
+            $path = $figure['PATH'];
 
-                echo '<form action="upload.php?imageid='.$_GET['imageid'].'" method="post" enctype="multipart/form-data">
+            echo '<form action="upload.php?imageid=' . $_GET['imageid'] . '" method="post" enctype="multipart/form-data">
         <h3>选择图片</h3>
         <div class="ImagesUpload" id="img-preview"><img src="../travel-images/large/' . $path . '"></div>
         <label><p>图片标题</p>
@@ -253,11 +260,11 @@ function compressedImage($imgsrc, $imgdst, $goal)
         </label>
         <label><p>图片描述</p>
             <textarea name="description" class="description">' . $description . '</textarea></label>';
-            } catch (PDOException $e) {
-                echo '<script>alert("服务器错误！")</script>';
-            }
-        } else {
-            echo '<form action="upload.php" method="post" enctype="multipart/form-data">
+        } catch (PDOException $e) {
+            echo '<script>alert("服务器错误！")</script>';
+        }
+    } else {
+        echo '<form action="upload.php" method="post" enctype="multipart/form-data">
         <h3>选择图片</h3>
         <label for="ImagesUpload" id="ImgUpBtn" class="ImgUpBtnBox">
             <input type="file" accept="image/*" name="file" id="ImagesUpload" class="uploadHide">
@@ -269,42 +276,42 @@ function compressedImage($imgsrc, $imgdst, $goal)
             <input type="text" name="title" class="title" required>
         </label>
          <label><p>图片描述</p>
-            <textarea name="description" class="description"></textarea></label>';
-        }
-        ?>
+            <textarea name="description" class="description" required></textarea></label>';
+    }
+    ?>
 
-        <label>
-            <select name="theme" required>
-                <option value="placeholder" selected disabled>按主题筛选</option>
-                <option value="scenery">scenery</option>
-                <option value="city">city</option>
-                <option value="people">people</option>
-                <option value="animal">animal</option>
-                <option value="building">building</option>
-                <option value="wonder">wonder</option>
-                <option value="other">other</option>
-            </select>
-            <select name="country" id="country" onchange="addOption()">
-                <option value="placeholder" selected>按国家筛选</option>
-            </select>
-            <select name="city" id="city"></select>
-        </label>
+    <label>
+        <select name="theme" required>
+            <option value="placeholder" selected disabled>按主题筛选</option>
+            <option value="scenery">scenery</option>
+            <option value="city">city</option>
+            <option value="people">people</option>
+            <option value="animal">animal</option>
+            <option value="building">building</option>
+            <option value="wonder">wonder</option>
+            <option value="other">other</option>
+        </select>
+        <select name="country" id="country" onchange="addOption()">
+            <option value="placeholder" selected>按国家筛选</option>
+        </select>
+        <select name="city" id="city"></select>
+    </label>
 
-        <?php
-        if (isset($_GET['imageid'])) {
-            echo '<input type="submit" name="edit" class="submit" value="修改">';
-        } else {
-            echo '<input type="submit" name="upload" class="submit" value="上传">';
-        }
-        ?>
+    <?php
+    if (isset($_GET['imageid'])) {
+        echo '<input type="submit" name="edit" class="submit" value="修改">';
+    } else {
+        echo '<input type="submit" name="upload" class="submit" value="上传">';
+    }
+    ?>
 
-        <?php
-        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload'])) {
-            upload();
-        } elseif ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit'])) {
-            edit();
-        }
-        ?>
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['upload'])) {
+        upload();
+    } elseif ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['edit'])) {
+        edit();
+    }
+    ?>
     </form>
 </main>
 
@@ -323,16 +330,16 @@ function compressedImage($imgsrc, $imgdst, $goal)
         <p> © 2020-现在 版权所有 备案号19302010059</p>
         <ul class="footer__nav__list">
             <li>
-                <a class="link" href="">使用条款</a>
+                <a class="link" href="" onclick="alert('别攻击就行')">使用条款</a>
             </li>
             <li>
-                <a class="link" href="">隐私政策</a>
+                <a class="link" href="" onclick="alert('我们没有隐私政策')">隐私政策</a>
             </li>
             <li>
                 <a class="link" href="">许可证书</a>
             </li>
             <li>
-                <a class="link" href="">版本说明</a>
+                <a class="link" href="" onclick="alert('盘古开天地1.0版')">版本说明</a>
             </li>
             <li>
                 <div class="languageChoose">

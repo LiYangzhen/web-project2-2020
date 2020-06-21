@@ -1,6 +1,7 @@
 <?php
 session_start();
-require_once('config.php');
+require_once(dirname(dirname(__FILE__)).'/rear_end/config.php');
+require_once(dirname(dirname(__FILE__)).'/rear_end/generate.php');
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +35,7 @@ require_once('config.php');
                 <li class="menu_item"><a href="upload.php" class="upload">上传图片</a></li>
                 <li class="menu_item"><a href="my_photos.php" class="my-pictures">我的图片</a></li>
                 <li class="menu_item"><a href="my_favourite.php" class="collections">我的收藏</a></li>
-                 <li class="menu_item"><a href="logout.php" class="logout">退出登录</a></li>
+                 <li class="menu_item"><a href="../rear_end/logout.php" class="logout">退出登录</a></li>
                 </ul>
                 </div>';
         } else {
@@ -51,70 +52,9 @@ require_once('config.php');
 <main>
 
     <?php
-    try {
-        $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-        $sql = "select Content,Description,Title,PATH from travelimage where ImageID=:imageid";
-        $result = $pdo->prepare($sql);
-        $result->bindValue(':imageid', $_GET['imageid']);
-        $result->execute();
-        $figure = $result->fetch();
-        $theme = $figure['Content'];
-        $description = $figure['Description'];
-        $title = $figure['Title'];
-        $path = $figure['PATH'];
-
-        $sql = "select travelimagefavor.UID from  travelimagefavor join travelimage on travelimage.ImageID=travelimagefavor.ImageID where travelimage.ImageID=:imageid";
-        $result = $pdo->prepare($sql);
-        $result->bindValue(':imageid', $_GET['imageid']);
-        $result->execute();
-        $favor = $result->rowCount();
-        $collected = false;
-        while ($row = $result->fetch()) {
-            if ($row['UID'] == $_SESSION['id']) {
-                $collected = true;
-            }
-        }
-        $collectedClass = $collected ? "favor" : "";
-
-        $sql = "select CountryName from travelimage join geocountries on travelimage.CountryCodeISO=geocountries.ISO where ImageID=:imageid";
-        $result = $pdo->prepare($sql);
-        $result->bindValue(':imageid', $_GET['imageid']);
-        $result->execute();
-        $figure = $result->fetch();
-        $country = $figure['CountryName'];
-
-        $sql = "select AsciiName from travelimage join geocities on travelimage.CityCode=geocities.GeoNameID where ImageID=:imageid";
-        $result = $pdo->prepare($sql);
-        $result->bindValue(':imageid', $_GET['imageid']);
-        $result->execute();
-        $figure = $result->fetch();
-        $city = $figure['AsciiName'];
-
-
-        echo '<h2>' . $title . '</h2>
-        <figure>
-        <img src="../travel-images/medium/' . $path . '" >
-        <div class="content">
-            <ul>
-                <li>收藏人数</li>
-                <li class="collection_number"><span>' . $favor . '</span><a href="collect.php?imageid=' . $_GET['imageid'] . '&collected='.$collected.'" class="' . $collectedClass . ' collect"></a></li>
-            </ul>
-            <ul>
-                <li>图片信息</li>
-                <li>主题:<span class="subject">' . $theme . '</span></li>
-                <li>国家:<span class="country">' . $country . '</span> </li>
-                <li>城市:<span class="city">' . $city . '</span> </li>
-            </ul>
-        </div>
-    </figure>
-    <article>
-        <p>' . $description . '</p>
-    </article>';
-    } catch (PDOException $e) {
-        echo '<script>alert("服务器错误！")</script>';
-    }
-
+    details_generate();
     ?>
+
 </main>
 <footer>
     <div class="footer__nav">
@@ -131,16 +71,16 @@ require_once('config.php');
         <p> © 2020-现在 版权所有 备案号19302010059</p>
         <ul class="footer__nav__list">
             <li>
-                <a class="link" href="">使用条款</a>
+                <a class="link" href="" onclick="alert('别攻击就行')">使用条款</a>
             </li>
             <li>
-                <a class="link" href="">隐私政策</a>
+                <a class="link" href="" onclick="alert('我们没有隐私政策')">隐私政策</a>
             </li>
             <li>
                 <a class="link" href="">许可证书</a>
             </li>
             <li>
-                <a class="link" href="">版本说明</a>
+                <a class="link" href="" onclick="alert('盘古开天地1.0版')">版本说明</a>
             </li>
             <li>
                 <div class="languageChoose">

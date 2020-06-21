@@ -1,5 +1,6 @@
 <?php
-require_once('config.php');
+session_start();
+require_once(dirname(dirname(__FILE__)).'/rear_end/config.php');
 ?>
 <!DOCTYPE html>
 <html lang="zh">
@@ -96,16 +97,16 @@ require_once('config.php');
         <p> © 2020-现在 版权所有 备案号19302010059</p>
         <ul class="footer__nav__list">
             <li>
-                <a class="link" href="">使用条款</a>
+                <a class="link" href="" onclick="alert('别攻击就行')">使用条款</a>
             </li>
             <li>
-                <a class="link" href="">隐私政策</a>
+                <a class="link" href="" onclick="alert('我们没有隐私政策')">隐私政策</a>
             </li>
             <li>
                 <a class="link" href="">许可证书</a>
             </li>
             <li>
-                <a class="link" href="">版本说明</a>
+                <a class="link" href="" onclick="alert('盘古开天地1.0版')">版本说明</a>
             </li>
             <li>
                 <div class="languageChoose">

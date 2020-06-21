@@ -150,22 +150,22 @@ function generate($result)
                     <div class="footer__body__column__title">免费素材照片</div>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=building&country=placeholder&city=placeholder&page=0&submit1=筛+选">自然动物</a>
+                    <a class="link" href="browse.php?theme=building&country=placeholder&city=placeholder&page=0&submit1=筛+选">自然动物</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=building&country=placeholder&city=placeholder&page=0&submit1=筛+选">建筑美学</a>
+                    <a class="link" href="browse.php?theme=building&country=placeholder&city=placeholder&page=0&submit1=筛+选">建筑美学</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=scenery&country=placeholder&city=placeholder&page=0&submit1=筛+选">山水植物</a>
+                    <a class="link" href="browse.php?theme=scenery&country=placeholder&city=placeholder&page=0&submit1=筛+选">山水植物</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=people&country=placeholder&city=placeholder&page=0&submit1=筛+选">唯美人像</a>
+                    <a class="link" href="browse.php?theme=people&country=placeholder&city=placeholder&page=0&submit1=筛+选">唯美人像</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=wonder&country=placeholder&city=placeholder&page=0&submit1=筛+选">世界奇观</a>
+                    <a class="link" href="browse.php?theme=wonder&country=placeholder&city=placeholder&page=0&submit1=筛+选">世界奇观</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?page=0&title=壁纸&submit2=搜索">精美壁纸</a>
+                    <a class="link" href="browse.php?page=0&title=壁纸&submit2=搜索">精美壁纸</a>
                 </li>
             </ul>
         </li>
@@ -176,22 +176,22 @@ function generate($result)
                     <div class="footer__body__column__title">国家</div>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=placeholder&country=China&city=placeholder&page=0&submit1=筛+选">中国</a>
+                    <a class="link" href="browse.php?theme=placeholder&country=China&city=placeholder&page=0&submit1=筛+选">中国</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=placeholder&country=United+States&city=placeholder&page=0&submit1=筛+选">美国</a>
+                    <a class="link" href="browse.php?theme=placeholder&country=United+States&city=placeholder&page=0&submit1=筛+选">美国</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=placeholder&country=United+Kingdom&city=placeholder&page=0&submit1=筛+选">英国</a>
+                    <a class="link" href="browse.php?theme=placeholder&country=United+Kingdom&city=placeholder&page=0&submit1=筛+选">英国</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=placeholder&country=Italy&city=placeholder&page=0&submit1=筛+选">意大利</a>
+                    <a class="link" href="browse.php?theme=placeholder&country=Italy&city=placeholder&page=0&submit1=筛+选">意大利</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=placeholder&country=Canada&city=placeholder&page=0&submit1=筛+选">加拿大</a>
+                    <a class="link" href="browse.php?theme=placeholder&country=Canada&city=placeholder&page=0&submit1=筛+选">加拿大</a>
                 </li>
                 <li>
-                    <a class="link" href="src/front_end/browse.php?theme=placeholder&country=France&city=placeholder&page=0&submit1=筛+选">法国</a>
+                    <a class="link" href="browse.php?theme=placeholder&country=France&city=placeholder&page=0&submit1=筛+选">法国</a>
                 </li>
             </ul>
         </li>

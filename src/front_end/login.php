@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('config.php');
+require_once(dirname(dirname(__FILE__)) . '/rear_end/config.php');
 ?>
 <!DOCTYPE html>
 <html lang="zh">
@@ -29,10 +29,10 @@ require_once('config.php');
             {
                 try {
                     $pdo = new PDO(DBCONNSTRING, DBUSER, DBPASS);
-                    $sql = "SELECT * FROM Traveluser WHERE UserName=:user and Pass=:pass";
+                    $sql = "SELECT UID,UserName,Pass FROM Traveluser WHERE UserName=:username AND Pass=:pass";
 
                     $statement = $pdo->prepare($sql);
-                    $statement->bindValue(':user', $_POST['username']);
+                    $statement->bindValue(':username', $_POST['username']);
                     $statement->bindValue(':pass', $_POST['password']);
                     $statement->execute();
                     if ($statement->rowCount() > 0) {
@@ -50,11 +50,11 @@ require_once('config.php');
 
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 switch ($row = validLogin()) {
-                    case false:
-                        echo "<p style='color: red'>用户名或密码错误</p>";
-                        break;
                     case "exception":
                         echo "<p style='color: red'>无法连接到服务器，请检查您的网络</p>";
+                        break;
+                    case false:
+                        echo "<p style='color: red'>用户名或密码错误</p>";
                         break;
                     default:
                         $_SESSION['id'] = $row['UID'];
@@ -91,16 +91,16 @@ require_once('config.php');
         <p> © 2020-现在 版权所有 备案号19302010059</p>
         <ul class="footer__nav__list">
             <li>
-                <a class="link" href="">使用条款</a>
+                <a class="link" href="" onclick="alert('别攻击就行')">使用条款</a>
             </li>
             <li>
-                <a class="link" href="">隐私政策</a>
+                <a class="link" href="" onclick="alert('我们没有隐私政策')">隐私政策</a>
             </li>
             <li>
                 <a class="link" href="">许可证书</a>
             </li>
             <li>
-                <a class="link" href="">版本说明</a>
+                <a class="link" href="" onclick="alert('盘古开天地1.0版')">版本说明</a>
             </li>
             <li>
                 <div class="languageChoose">

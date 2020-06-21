@@ -30,4 +30,5 @@ if (isset($_SESSION['id'])) {
     }
 } else {
     echo '<script>alert("请登陆后收藏")</script>';
+    header("Location: " . $_SERVER['HTTP_REFERER']);
 }
